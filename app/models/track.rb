@@ -14,13 +14,15 @@ class Track < ActiveRecord::Base
       row_number() OVER () as position, 
       track_id, 
       COUNT(track_id) as score
-    }).limit(limit).order("score DESC").group("track_id")
+    }).limit(limit).
+    order("score DESC").group("track_id").
+    where("code IN (?)", data[:codes].join(","))
 
     track_ids_cmp = result.each_object({}) do |result, container|
       container[result.track_id] = result.position
     end
 
-    c_res = res.map do |r|
+    c_res = result.map do |r|
       { 
         track_id: r.track_id, 
         score: r.score, 
@@ -31,7 +33,7 @@ class Track < ActiveRecord::Base
 
     codes = Code.select("code, time, track_id").
       where("code IN (?)", data[:codes].join(",")).
-      where("track_id IN (?)", res.map(&:track_id))
+      where("track_id IN (?)", result.map(&:track_id))
 
     codes.each do |match|
       next unless ids = track_ids_cmp[match.track_id]

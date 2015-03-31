@@ -25,5 +25,9 @@ module Echonest
     config.generators do |g|
       g.test_framework :rspec
     end
+
+    config.autoload_paths += [
+      File.join(config.root, "lib")
+    ]
   end
 end
