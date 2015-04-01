@@ -11,15 +11,14 @@ class Track < ActiveRecord::Base
 
   def self.fp(data, limit: 5)
     result = Code.select(%q{
-      row_number() OVER () as position, 
       track_id, 
       COUNT(track_id) as score
     }).limit(limit).
     order("score DESC").group("track_id").
-    where("code IN (?)", data[:codes].join(","))
+    where("code IN (?)", data[:codes]).to_a
 
-    track_ids_cmp = result.each_object({}) do |result, container|
-      container[result.track_id] = result.position
+    track_ids_cmp = result.each_with_index.each_with_object({}) do |result, index, container|
+      container[result.track_id] = index
     end
 
     c_res = result.map do |r|
@@ -32,7 +31,7 @@ class Track < ActiveRecord::Base
     end
 
     codes = Code.select("code, time, track_id").
-      where("code IN (?)", data[:codes].join(",")).
+      where("code IN (?)", data[:codes]).
       where("track_id IN (?)", result.map(&:track_id))
 
     codes.each do |match|

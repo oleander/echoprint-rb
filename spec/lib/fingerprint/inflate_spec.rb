@@ -1,10 +1,9 @@
 describe Fingerprint::Inflate do
   it "should ingest fingerprint" do
-    path = Rails.root.join("spec/fixtures/fingerprint.json")
-    data = File.read(path)
-    json = JSON.parse(data)
-
-    puts Fingerprint::Inflate.new(json.first.fetch("code")).inflate
-    pending "not propery tested"
+    json = json_fixture("finger-input.json")
+    data = Fingerprint::Inflate.new(json.first.fetch("code")).inflate
+    json2 = json_fixture("finger-output.json")
+    data[:times].should eq(json2["times"])
+    data[:codes].should eq(json2["codes"])
   end
 end

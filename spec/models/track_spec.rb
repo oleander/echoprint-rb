@@ -1,5 +1,13 @@
-require 'rails_helper'
+describe Track do
+  context "fp" do
+    it "should work" do
+      path = Rails.root.join("spec/fixtures/fingerprint.json")
+      data = File.read(path)
+      json = JSON.parse(data)
 
-RSpec.describe Track, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+      fp = Fingerprint::Inflate.new(json.first.fetch("code")).inflate
+
+      Track.fp(fp)
+    end
+  end
 end
