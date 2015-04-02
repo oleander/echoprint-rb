@@ -16,7 +16,7 @@ class Track < ActiveRecord::Base
     order("score DESC").
     group("track_id").
     where("code IN (?)", data[:codes]).
-    where("tracks.version = ?", version).
+    where("version = ?", version).
     to_a
 
     index = 0
