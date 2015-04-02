@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402213457) do
+ActiveRecord::Schema.define(version: 20150402220407) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,12 +26,12 @@ ActiveRecord::Schema.define(version: 20150402213457) do
 
   create_table "tracks", force: :cascade do |t|
     t.string   "external_id"
-    t.string   "codever"
+    t.string   "version"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.integer  "duration",    null: false
   end
 
-  add_index "tracks", ["external_id", "codever"], name: "index_tracks_on_external_id_and_codever", unique: true, using: :btree
+  add_index "tracks", ["id"], name: "index_tracks_on_id", unique: true, using: :btree
 
 end

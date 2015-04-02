@@ -12,9 +12,9 @@ describe Track do
   end
 
   it "should only allow certain versions" do
-    expect(build(:track, codever: "invalid")).to_not be_valid
-    expect(build(:track, codever: "")).to_not be_valid
-    expect(build(:track, codever: nil)).to_not be_valid
+    expect(build(:track, version: "invalid")).to_not be_valid
+    expect(build(:track, version: "")).to_not be_valid
+    expect(build(:track, version: nil)).to_not be_valid
   end
 
   it "must have an external id" do

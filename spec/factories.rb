@@ -6,7 +6,7 @@ FactoryGirl.define do
   end
 
   factory :track do
-    codever Track::VERSION
+    version Track::VERSION
     sequence(:external_id) { |n| "external-id-#{n}" }
     duration 100
   end

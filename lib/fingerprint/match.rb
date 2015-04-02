@@ -6,13 +6,13 @@ module Fingerprint
   THRESHOLD         = 10
 
   class Match
-    def initialize(fp, threshold = THRESHOLD)
-      @fp, @threshold = fp, threshold
+    def initialize(fp, version, threshold = THRESHOLD)
+      @fp, @version, @threshold = fp, version, threshold
     end
-    attr_accessor :fp, :threshold
+    attr_accessor :fp, :threshold, :version
 
     def match
-      matches = Track.fp(fp, limit: 10)
+      matches = Track.fp(fp, version: version, limit: 10)
 
       if matches.empty?
         raise Fingerprint::NoRecord, "NO_RESULTS"
