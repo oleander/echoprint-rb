@@ -26,8 +26,19 @@ module Fingerprint
         end
 
         ActiveRecord::Base.connection.execute(%Q{
-          INSERT INTO codes (code, time, track_id) 
-            VALUES #{result.to_a.join(", ")}
+          CREATE TEMP TABLE tmp_codes ON COMMIT DROP
+          AS
+          SELECT *
+          FROM codes
+          WITH NO DATA;
+
+          INSERT INTO tmp_codes (code, time, track_id) 
+            VALUES #{result.to_a.join(", ")};
+
+          INSERT INTO codes(code, time, track_id)
+          SELECT DISTINCT ON (code, time, track_id) code, time, track_id
+          FROM tmp_codes
+          ORDER BY code, time, track_id;
         })
 
         track
