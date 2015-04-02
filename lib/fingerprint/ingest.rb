@@ -10,7 +10,9 @@ module Fingerprint
 
     def ingest
       match = Fingerprint::Match.new(fp).match
+
       if match
+        Track.find(match[:track_id])
       else
         track = Track.create!({
           external_id: external_id,
@@ -27,9 +29,9 @@ module Fingerprint
           INSERT INTO codes (code, time, track_id) 
             VALUES #{result.to_a.join(", ")}
         })
-      end
 
-      return track
+        track
+      end
     end
   end
 end

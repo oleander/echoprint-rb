@@ -28,7 +28,7 @@ module Fingerprint
 
       raise "no new matches" if matches.empty?
       
-      matches        = matches.sort_by{ |a, b| b[:ascore] - a[:ascore] }
+      matches        = matches.sort_by{ |a| a[:ascore] }.reverse
       top_match      = matches.first
       orig_top_score = top_match[:ascore]
       new_top_score  = top_match[:ascore]
@@ -51,8 +51,6 @@ module Fingerprint
     def actual_score(match, slop = MATCH_SLOP)
       return 0 if match[:codes].length < threshold
       
-      # Här i är felet
-      # Rätt ingående data, men fel utgående
       time_diffs = {}
       
       match_codes_to_times = codes_to_time(match, slop)
@@ -76,30 +74,16 @@ module Fingerprint
         [key, time_diffs.fetch(key)]
       end
 
+      # TODO: Optimize
       array = array.sort_by{ |a| a[1] }.reverse
 
-      # pp array.map(&:first).sort_by{|a,b| b - a }
-      
-      # array.each do |a,b|
-      #   if b == 8640
-      #     puts "#{a} OKOKOKOKOK!!!!"
-      #   end
-
-      #   if b == 84
-      #     puts "#{a} TJOOOO"
-      #   end
-      # end
       if array.length > 1
-        res = array[0][1] + array[1][1]
-        # puts "array[0][1]=#{array[0][1]}"
-        # puts "array[1][1]=#{array[1][1]}"
-        # puts "array[0][1] + array[1][1]=#{array[0][1] + array[1][1]}"
+        array[0][1] + array[1][1]
       elsif array.length == 1
-        res = array[0][1]
+        array[0][1]
+      else
+        0
       end
-
-      puts res
-      res ||= 0
     end
 
     def codes_to_time(match, slop)
