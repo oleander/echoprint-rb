@@ -28,7 +28,7 @@ module Fingerprint
 
       raise "no new matches" if matches.empty?
       
-      matches        = matches.sort_by{ |a| a[:ascore] }.reverse
+      matches        = matches.sort_by{ |a| -1 * a[:ascore] }
       top_match      = matches.first
       orig_top_score = top_match[:ascore]
       new_top_score  = top_match[:ascore]
@@ -74,8 +74,7 @@ module Fingerprint
         [key, time_diffs.fetch(key)]
       end
 
-      # TODO: Optimize
-      array = array.sort_by{ |a| a[1] }.reverse
+      array = array.sort_by{ |a| -1 * a[1] }
 
       if array.length > 1
         array[0][1] + array[1][1]
