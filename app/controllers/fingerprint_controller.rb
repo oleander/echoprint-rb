@@ -28,15 +28,18 @@ class FingerprintController < ApplicationController
   # @params[:code] String
   # @params[:version] String
   # @params[:external_id] String
+  # @params[:duration] String
   #
   def ingest
     param! :code, String, required: true
     param! :version, String, in: Track::VERSIONS, default: Track::VERSION
     param! :external_id, String, required: true
+    param! :duration, Integer, required: true, min: 0
 
     track = Fingerprint::Ingest.new(
       Fingerprint::Inflate.new(params[:code]).inflate,
       params[:external_id],
+      params[:duration],
       params[:version]
     ).ingest
 

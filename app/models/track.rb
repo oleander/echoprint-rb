@@ -5,6 +5,7 @@ class Track < ActiveRecord::Base
   has_many :codes, dependent: :destroy
 
   validates :codever, inclusion: { in: VERSIONS }, presence: true
+  validates :duration, numericality: { greater_than: 0 }
   validates :external_id, presence: true
 
   def self.fp(data, limit: 5)

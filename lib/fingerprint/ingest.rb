@@ -2,13 +2,7 @@ require "set"
 require_relative "./error"
 
 module Fingerprint
-  class Ingest < Struct.new(:fp, :version, :external_id)
-
-    attr_accessor :fp, :external_id, :version
-    def initialize(fp, external_id, version = Track::VERSION)
-      @fp, @external_id, @version = fp, external_id, version
-    end
-
+  class Ingest < Struct.new(:fp, :external_id, :duration, :version)
     def ingest
       Track.find(Fingerprint::Match.new(fp).match[:track_id])
     rescue Fingerprint::NoRecord
@@ -20,6 +14,7 @@ module Fingerprint
     def find_track
       track = Track.create!({
         external_id: external_id,
+        duration: duration,
         codever: version
       })
 
@@ -46,6 +41,10 @@ module Fingerprint
       })
 
       track
+    end
+
+    def version
+      super || Track::VERSION
     end
   end
 end

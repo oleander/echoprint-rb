@@ -21,4 +21,10 @@ describe Track do
     expect(build(:track, external_id: nil)).to_not be_valid
     expect(build(:track, external_id: "")).to_not be_valid
   end
+
+  it "should have a positive duration" do
+    expect(build(:track, duration: nil)).to_not be_valid
+    expect(build(:track, duration: -1)).to_not be_valid
+    expect(build(:track, duration: 10)).to be_valid
+  end
 end
