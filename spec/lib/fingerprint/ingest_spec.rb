@@ -14,5 +14,6 @@ describe Fingerprint::Ingest do
     track1 = Fingerprint::Ingest.new(data, 1).ingest
     track2 = Fingerprint::Ingest.new(data, 1).ingest
     track1.should eq(track2)
+    track1.external_id.should eq("1")
   end
 end
