@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem "rails", "~> 4.2"
 gem "rails-api"
 gem "pg"
+gem "rails_param"
 
 group :development, :test do
   gem "spring-commands-rspec"

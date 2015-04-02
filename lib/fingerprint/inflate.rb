@@ -1,3 +1,5 @@
+require_relative "./error"
+
 module Fingerprint
   class Inflate < Struct.new(:raw)
     def inflate
@@ -24,6 +26,8 @@ module Fingerprint
 
     def decode(token)
       Zlib::Inflate.inflate(Base64.urlsafe_decode64 token)
+    rescue ArgumentError, Zlib::Error
+      raise InvalidCode, $!.message
     end
   end
 end

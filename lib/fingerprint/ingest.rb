@@ -1,4 +1,5 @@
 require "set"
+require_relative "./error"
 
 module Fingerprint
   class Ingest < Struct.new(:fp, :version, :external_id)
@@ -11,7 +12,7 @@ module Fingerprint
     def ingest
       Track.find(Fingerprint::Match.new(fp).match[:track_id])
     rescue Fingerprint::NoRecord
-      find_track
+      Track.transaction { find_track }
     end
 
     private
@@ -48,4 +49,3 @@ module Fingerprint
     end
   end
 end
-

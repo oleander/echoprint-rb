@@ -1,5 +1,5 @@
 describe Fingerprint::Query do
-  it "work" do
+  it "should work" do
     output = json_fixture("finger-output.json")
     input = json_fixture("finger-input.json")
     track1 = Fingerprint::Ingest.new(output, 1).ingest

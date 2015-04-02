@@ -4,4 +4,7 @@ module Fingerprint
 
   class NoRecord < Error
   end
+
+  class InvalidCode < Error
+  end
 end
