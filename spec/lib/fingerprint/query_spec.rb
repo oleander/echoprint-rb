@@ -1,13 +1,9 @@
 describe Fingerprint::Query do
   it "work" do
-
-    data = json_fixture("finger-output.json")
-    data.symbolize_keys!
-
-    track1 = Fingerprint::Ingest.new(data, 1).ingest
-
-    data = json_fixture("finger-input.json")
-    track2 = Fingerprint::Query.new(data.first.fetch("code")).query
-    track1.id.should eq(track2.id)
+    output = json_fixture("finger-output.json")
+    input = json_fixture("finger-input.json")
+    track1 = Fingerprint::Ingest.new(output, 1).ingest
+    track2 = Fingerprint::Query.new(input.first[:code]).query
+    expect(track1).to eq(track2)
   end
 end
