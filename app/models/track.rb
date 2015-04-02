@@ -2,7 +2,7 @@ class Track < ActiveRecord::Base
   VERSIONS = ["4.12"]
   VERSION = VERSIONS.last
 
-  has_many :codes
+  has_many :codes, dependent: :destroy
 
   validates :codever, inclusion: { in: VERSIONS }, presence: true
   validates :external_id, presence: true
