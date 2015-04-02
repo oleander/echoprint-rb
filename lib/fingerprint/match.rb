@@ -1,21 +1,25 @@
+require_relative "./error"
+
 module Fingerprint
   MIN_MATCH_PERCENT = 0.1
   MATCH_SLOP        = 2
+  THRESHOLD         = 10
 
-  class Match < Struct.new(:fp, :threshold)
-    def threshold
-      super || 10
+  class Match
+    def initialize(fp, threshold = THRESHOLD)
+      @fp, @threshold = fp, threshold
     end
+    attr_accessor :fp, :threshold
 
     def match
-      raise "no codes" if fp[:codes].empty?
-      
       matches = Track.fp(fp, limit: 10)
 
-      return nil if matches.empty?
+      if matches.empty?
+        raise Fingerprint::NoRecord, "NO_RESULTS"
+      end
       
       if matches.first[:score] < fp[:codes].length * MIN_MATCH_PERCENT
-        raise "min match percent"
+        raise Fingerprint::NoRecord, "MULTIPLE_BAD_HISTOGRAM_MATCH"
       end
 
       matches = matches.each_with_object([]) do |match, result|
@@ -25,8 +29,9 @@ module Fingerprint
         end
       end
 
-
-      raise "no new matches" if matches.empty?
+      if matches.empty?
+        raise Fingerprint::NoRecord, "NO_RESULTS_HISTOGRAM_DECREASED"
+      end
       
       matches        = matches.sort_by{ |a| -1 * a[:ascore] }
       top_match      = matches.first
@@ -34,19 +39,21 @@ module Fingerprint
       new_top_score  = top_match[:ascore]
             
       if new_top_score < fp[:codes].length * MIN_MATCH_PERCENT
-        raise "MULTIPLE_BAD_HISTOGRAM_MATCH"
+        raise Fingerprint::NoRecord, "MULTIPLE_BAD_HISTOGRAM_MATCH"
       end
         
       if new_top_score <= orig_top_score / 2
-        return raise "MULTIPLE_BAD_HISTOGRAM_MATCH"
+        raise Fingerprint::NoRecord, "MULTIPLE_BAD_HISTOGRAM_MATCH"
       end
         
       if matches[1] && new_top_score - matches[1][:ascore] < new_top_score / 2
-        raise 'MULTIPLE_BAD_HISTOGRAM_MATCH'
+        raise Fingerprint::NoRecord, "MULTIPLE_BAD_HISTOGRAM_MATCH"
       end
         
       return top_match
     end
+
+    private
 
     def actual_score(match, slop = MATCH_SLOP)
       return 0 if match[:codes].length < threshold
