@@ -1,12 +1,10 @@
 class Track < ActiveRecord::Base
   VERSIONS = ["4.12"]
+  VERSION = VERSIONS.last
 
   has_many :codes
 
-  validates :codever, 
-    inclusion: { in: VERSIONS },
-    presence: true,
-    uniqueness: { scope: [:external_id] }
+  validates :codever, inclusion: { in: VERSIONS }, presence: true
   validates :external_id, presence: true
 
   def self.fp(data, limit: 5)
@@ -17,8 +15,10 @@ class Track < ActiveRecord::Base
     order("score DESC").group("track_id").
     where("code IN (?)", data[:codes]).to_a
 
-    track_ids_cmp = result.each_with_index.each_with_object({}) do |result, index, container|
-      container[result.track_id] = index
+    index = 0
+    track_ids_cmp = result.each_with_object({}) do |res, container|
+      container[res.track_id] = index
+      index += 1
     end
 
     c_res = result.map do |r|

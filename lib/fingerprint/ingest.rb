@@ -2,24 +2,34 @@ require "set"
 
 module Fingerprint
   class Ingest < Struct.new(:fp, :version, :external_id)
+
+    attr_accessor :fp, :external_id, :version
+    def initialize(fp, external_id, version = Track::VERSION)
+      @fp, @external_id, @version = fp, external_id, version
+    end
+
     def ingest
       match = Fingerprint::Match.new(fp).match
+      if match
+      else
+        track = Track.create!({
+          external_id: external_id,
+          codever: version
+        })
 
-      track = Track.where(
-        "external_id = ? AND codever = ?", external_id, version
-      ).first_or_create!
+        result = fp[:codes].length.times.each_with_object(Set.new) do |index, set|
+          code = fp[:codes][index]
+          time = fp[:times][index]
+          set.add("(" + [code, time, track.id].join(",") + ")")
+        end
 
-      result = match[:codes].length.times.each_object(Set.new) do |index, set|
-        code = match[:codes][index]
-        time = match[:times][index]
-        res.add("(" + code + "," + time + "," + track.id + ")")
+        ActiveRecord::Base.connection.execute(%Q{
+          INSERT INTO codes (code, time, track_id) 
+            VALUES #{result.to_a.join(", ")}
+        })
       end
 
-      ActiveRecord::Base.connection.execute(%Q{
-        INSERT INTO codes (code, time, track_id) 
-          VALUES #{result.join(", ")}
-          ON DUPLICATE KEY UPDATE
-      })
+      return track
     end
   end
 end

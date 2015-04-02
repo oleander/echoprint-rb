@@ -12,25 +12,28 @@ module Fingerprint
       
       matches = Track.fp(fp, limit: 10)
 
-      if matches.first.score < fp[:codes].length * MIN_MATCH_PERCENT
+      return nil if matches.empty?
+      
+      if matches.first[:score] < fp[:codes].length * MIN_MATCH_PERCENT
         raise "min match percent"
       end
-      
-      matches = matches.each_object([]) do |match, result|
-        match.ascore = actual_score(match)
-        if match[:ascore] && match[:ascore] >= fp.codes.length * MIN_MATCH_PERCENT
+
+      matches = matches.each_with_object([]) do |match, result|
+        match[:ascore] = actual_score(match)
+        if match[:ascore] && match[:ascore] >= fp[:codes].length * MIN_MATCH_PERCENT
           result << match
         end
       end
+
 
       raise "no new matches" if matches.empty?
       
       matches        = matches.sort_by{ |a, b| b[:ascore] - a[:ascore] }
       top_match      = matches.first
-      orig_top_score = top_match.ascore
-      new_top_score  = top_match.ascore
+      orig_top_score = top_match[:ascore]
+      new_top_score  = top_match[:ascore]
             
-      if new_top_score < fp.codes.length * MIN_MATCH_PERCENT
+      if new_top_score < fp[:codes].length * MIN_MATCH_PERCENT
         raise "MULTIPLE_BAD_HISTOGRAM_MATCH"
       end
         
@@ -38,7 +41,7 @@ module Fingerprint
         return raise "MULTIPLE_BAD_HISTOGRAM_MATCH"
       end
         
-      if matches[1] && new_top_score - matches[1].ascore < new_top_score / 2
+      if matches[1] && new_top_score - matches[1][:ascore] < new_top_score / 2
         raise 'MULTIPLE_BAD_HISTOGRAM_MATCH'
       end
         
@@ -46,56 +49,71 @@ module Fingerprint
     end
 
     def actual_score(match, slop = MATCH_SLOP)
-      return 0 if match.codes.length < threshold
+      return 0 if match[:codes].length < threshold
       
+      # Här i är felet
+      # Rätt ingående data, men fel utgående
       time_diffs = {}
       
       match_codes_to_times = codes_to_time(match, slop)
+
       
-      fp.codes.length.each do |i|
-        code = fp.codes[i]
-        time = Math.floor(fp.times[i] / slop) * slop
+      fp[:codes].length.times do |i|
+        code = fp[:codes][i]
+        time = (fp[:times][i] / slop.to_f).floor * slop
 
         match_times = match_codes_to_times[code]
         next unless match_times
         match_times.each do |m_time|
           dist = (time - m_time).abs
 
-          if time_diffs[dist].nil?
-            time_diffs[dist] = 0
-          end
-          
+          time_diffs[dist] ||= 0
           time_diffs[dist] += 1
         end
       end
 
       array = time_diffs.keys.map do |key|
-        [key, timeDiffs[key]]
+        [key, time_diffs.fetch(key)]
       end
 
-      array = array.sort_by{ |a,b| b[1] - a[1] }
+      array = array.sort_by{ |a| a[1] }.reverse
+
+      # pp array.map(&:first).sort_by{|a,b| b - a }
       
+      # array.each do |a,b|
+      #   if b == 8640
+      #     puts "#{a} OKOKOKOKOK!!!!"
+      #   end
+
+      #   if b == 84
+      #     puts "#{a} TJOOOO"
+      #   end
+      # end
       if array.length > 1
-        return array[0][1] + array[1][1]
+        res = array[0][1] + array[1][1]
+        # puts "array[0][1]=#{array[0][1]}"
+        # puts "array[1][1]=#{array[1][1]}"
+        # puts "array[0][1] + array[1][1]=#{array[0][1] + array[1][1]}"
       elsif array.length == 1
-        return array[0][1]
+        res = array[0][1]
       end
 
-      return 0
+      puts res
+      res ||= 0
     end
 
     def codes_to_time(match, slop)
-      codesToTimes = {}
+      times = {}
       
-      match.codes.length.times.each do |i|
-        code = match.codes[i]
-        time = (match.times[i] / slop.to_f).floor * slop
+      match[:codes].length.times.each do |i|
+        code = match[:codes][i]
+        time = (match[:times][i] / slop.to_f).floor * slop
         
-        codesToTimes[code] ||= []
-        codesToTimes[code] << time
+        times[code] ||= []
+        times[code] << time
       end
       
-      return codesToTimes
+      times
     end
   end
 end

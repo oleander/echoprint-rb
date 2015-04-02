@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330221711) do
+ActiveRecord::Schema.define(version: 20150402113840) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "codes", force: :cascade do |t|
     t.integer "code",     null: false
@@ -19,7 +22,7 @@ ActiveRecord::Schema.define(version: 20150330221711) do
     t.integer "track_id", null: false
   end
 
-  add_index "codes", ["code", "time", "track_id"], name: "index_codes_on_code_and_time_and_track_id", unique: true
+  add_index "codes", ["code", "time", "track_id"], name: "index_codes_on_code_and_time_and_track_id", unique: true, using: :btree
 
   create_table "tracks", force: :cascade do |t|
     t.string   "external_id"
@@ -28,6 +31,6 @@ ActiveRecord::Schema.define(version: 20150330221711) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "tracks", ["external_id", "codever"], name: "index_tracks_on_external_id_and_codever", unique: true
+  add_index "tracks", ["external_id", "codever"], name: "index_tracks_on_external_id_and_codever", unique: true, using: :btree
 
 end
