@@ -8,7 +8,7 @@ God.watch do |w|
     "BUNDLE_GEMFILE" => "#{rails_root}/Gemfile"
   }
 
-  w.start = "bundle exec unicorn -c #{File.join(rails_root, "config/unicorn.rb")} -E production -D"
+  w.start = "bbundle4 exec unicorn -c #{File.join(rails_root, "config/unicorn.rb")} -E production -D"
   w.stop = "kill -QUIT `cat #{rails_root}/log/unicorn.pid`"
   w.restart = "kill -USR2 `cat #{rails_root}/log/unicorn.pid`"
 
