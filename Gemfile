@@ -11,6 +11,7 @@ gem "capistrano-rvm"
 gem "capistrano"
 
 gem "airbrake"
+gem "unicorn"
 
 group :development, :test do
   gem "spring-commands-rspec"
