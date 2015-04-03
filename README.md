@@ -28,7 +28,7 @@ Adds a new music fingerprint to the database if the given fingerprint is unique,
 - `duration` - Track duration field output by echoprint-codegen.
 - `external_id` - A UUID value representing the tracks.
  
-### GET /query
+### GET /fingerprint/query
 
 Queries for a track matching the given fingerprint. `code` and `version` 
 query parameters are both required. The response is a JSON object 
