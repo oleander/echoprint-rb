@@ -8,7 +8,7 @@ module Fingerprint
         Fingerprint::Match.new(fp, version).match[:track_id]
       )
     rescue Fingerprint::NoRecord
-      find_track
+      Track.transaction { find_track }
     end
 
     private
