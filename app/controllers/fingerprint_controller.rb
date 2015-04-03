@@ -20,6 +20,8 @@ class FingerprintController < ApplicationController
     render json: { error: $!.message }, status: 404
   rescue Fingerprint::Error
     render json: { error: $!.message }, status: 406
+  rescue RailsParam::Param::InvalidParameterError
+    render json: { error: $!.message }, status: 406
   end
 
   #
@@ -33,7 +35,7 @@ class FingerprintController < ApplicationController
   def ingest
     param! :code, String, required: true
     param! :version, String, in: Track::VERSIONS
-    param! :external_id, String, required: true
+    param! :external_id, String, required: true, format: Track::RUUID
     param! :duration, Integer, required: true, min: 0
 
     track = Fingerprint::Ingest.new(
@@ -45,6 +47,8 @@ class FingerprintController < ApplicationController
 
     render json: track.as_json(only: [:id, :external_id, :duration])
   rescue Fingerprint::Error
+    render json: { error: $!.message }, status: 406
+  rescue RailsParam::Param::InvalidParameterError
     render json: { error: $!.message }, status: 406
   end
 end

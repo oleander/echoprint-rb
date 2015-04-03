@@ -17,9 +17,10 @@ describe Track do
     expect(build(:track, version: nil)).to_not be_valid
   end
 
-  it "must have an external id" do
+  it "must have an MBID" do
     expect(build(:track, external_id: nil)).to_not be_valid
     expect(build(:track, external_id: "")).to_not be_valid
+    expect(build(:track, external_id: "hello")).to_not be_valid
   end
 
   it "should have a positive duration" do

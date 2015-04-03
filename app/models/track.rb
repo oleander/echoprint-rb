@@ -1,12 +1,13 @@
 class Track < ActiveRecord::Base
   VERSIONS = ["4.12"]
   VERSION = VERSIONS.last
+  RUUID = /\A[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/i
 
   has_many :codes, dependent: :destroy
 
   validates :version, inclusion: { in: VERSIONS }, presence: true
   validates :duration, numericality: { greater_than: 0 }
-  validates :external_id, presence: true
+  validates :external_id, presence: true, format: { with: RUUID }
 
   def self.fp(data, version: VERSION, limit: 5)
     result = Code.joins(:track).select(%q{
