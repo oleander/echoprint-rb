@@ -35,7 +35,7 @@ class FingerprintController < ApplicationController
   def ingest
     param! :code, String, required: true
     param! :version, String, in: Track::VERSIONS
-    param! :external_id, String, required: true, format: Track::RUUID
+    param! :external_id, String, required: true #, format: Track::RUUID
     param! :duration, Integer, required: true, min: 0
 
     track = Fingerprint::Ingest.new(
