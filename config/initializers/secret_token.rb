@@ -16,4 +16,4 @@
 # Using secret_token for rails3 compatibility. Change to secret_key_base
 # to avoid deprecation warning.
 # Can be safely removed in a rails3 api-only application.
-Echonest::Application.config.secret_token = 'ed5d0882968ac6f982eb7d627c2ee455fd0d1fe4065ab7b7057915349cde717a2760cc8baac02e088fee4e9c983badb0dda565d2f3f126c6ba8c8e3a23015fe8'
+Echoprint::Application.config.secret_token = 'ed5d0882968ac6f982eb7d627c2ee455fd0d1fe4065ab7b7057915349cde717a2760cc8baac02e088fee4e9c983badb0dda565d2f3f126c6ba8c8e3a23015fe8'
