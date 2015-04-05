@@ -1,0 +1,13 @@
+development:
+  adapter: postgresql
+  database: echoprint
+  username: username
+  encoding: UTF8
+  host: localhost
+
+test:
+  adapter: postgresql
+  database: echonest_test
+  username: username
+  encoding: UTF8
+  host: localhost
