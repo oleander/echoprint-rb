@@ -6,7 +6,7 @@ A ruby music identification server that is compatible with the
 ## Dependencies
 
 - Ruby 2+
-- Postgresql
+- PostgreSQL
 
 To generate audio fingerprints you will need the [echoprint-codegen](https://github.com/echonest/echoprint-codegen) client.
 
@@ -14,7 +14,7 @@ To generate audio fingerprints you will need the [echoprint-codegen](https://git
 
 - Clone the project and enter the `echoprint` folder.
 - Install dependencies using `bundle install`
-- Set up the database by changing `config/database.yml` then ru `rake db:create db:migrate`.
+- Set up the database by copying `config/database-temp.yml` to `config/database.yml` and change the credentials. Then run `rake db:create db:migrate`.
 - Now start the server `rails s`.
 
 ## Endpoints
@@ -37,3 +37,17 @@ successful match, or `error` string if something went wrong.
 
 - `code` - The code string output by echoprint-codegen.
 - `version` - `metadata.version` field output by echoprint-codegen.
+
+## Example request
+
+Take a look at the `examples` folder for complete examples of how to create a fingerprint.
+
+## Tests
+
+Invoke `rspec .` to run the test suite.
+
+## TODO
+
+- Optimize PostgreSQL indexes
+- Move fingerprint logic into a low level language like Rust or C
+- More tests
