@@ -5,17 +5,10 @@ gem "rails-api"
 gem "pg"
 gem "rails_param"
 
-gem "capistrano-bundler"
-gem "capistrano-rails", "~> 1.1"
-gem "capistrano-rvm"
-gem "capistrano"
-
-gem "airbrake"
-gem "unicorn"
-
 group :development, :test do
   gem "spring-commands-rspec"
   gem "spring"
+  gem "thin"
 end
 
 group :test do
