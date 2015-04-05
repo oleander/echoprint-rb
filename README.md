@@ -20,7 +20,7 @@ To generate audio fingerprints you will need the [echoprint-codegen](https://git
   - Migrate the database using `rake db:create db:migrate`.
 - Start the server using `rails s` on port 3000.
 
-Take a look at the [example requests](#example-request) section below for code examples.
+Take a look at the [example requests](#example-requests) section below for code examples.
 
 ## Endpoints
 
